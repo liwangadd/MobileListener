@@ -60,7 +60,6 @@ public class LoginActivity extends Activity implements Callback<IsSuccess>, View
 
     @Override
     public void success(IsSuccess isSuccess, Response response) {
-        Logger.d(isSuccess.getMessage());
         if (isSuccess.getMessage().equals("true")) {
             SharedPreferences preferences = getSharedPreferences("login", Context.MODE_PRIVATE);
             StuIdHolder.userId = isSuccess.getStuId();
@@ -77,6 +76,7 @@ public class LoginActivity extends Activity implements Callback<IsSuccess>, View
 
     @Override
     public void failure(RetrofitError error) {
+        Logger.d(error.getMessage());
         Toast.makeText(this, "网络连接失败", Toast.LENGTH_SHORT).show();
     }
 
