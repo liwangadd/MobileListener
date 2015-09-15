@@ -4,6 +4,7 @@ package com.nicolas.mobilelistener.bean;
  * Created by Nikolas on 2015/9/15.
  */
 public class Question {
+    private int que_id;
     private String que_topic;
     private String ans_a;
     private String ans_b;
@@ -66,6 +67,14 @@ public class Question {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public int getQue_id() {
+        return que_id;
+    }
+
+    public void setQue_id(int que_id) {
+        this.que_id = que_id;
     }
 
     @Override

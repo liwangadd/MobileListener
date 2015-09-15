@@ -104,6 +104,7 @@ public class MusicActivity extends Activity implements Callback<AllTest>, Adapte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent=new Intent(this,AnsActivity.class);
         intent.putExtra("test_id",allTest.get(position).getTest_id());
+        intent.putExtra("test_topic",allTest.get(position).getTest_topic());
         startActivity(intent);
     }
 

@@ -17,6 +17,10 @@ public interface QuestionService {
 
     @FormUrlEncoded
     @POST("/queById")
-    public void getQueById(@Field("test_id")String testId, Callback<AllQuestion> callback);
+    public void getQueById(@Field("test_id") String testId, Callback<AllQuestion> callback);
+
+    @FormUrlEncoded
+    @POST("/ans")
+    public void checkQueAns(@Field("que_id") int queId, @Field("ans") String ans, @Field("stu_id") String stuId, Callback<List<String>> callback);
 
 }

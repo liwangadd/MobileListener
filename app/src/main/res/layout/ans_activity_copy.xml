@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_midbackground">
+    android:background="@drawable/main_background">
     <!-- 顶部 界面 -->
     <RelativeLayout
         android:id="@+id/top_layout"
@@ -14,8 +14,10 @@
             android:id="@+id/txtLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/btnLogin"
             android:layout_centerVertical="true"
             android:layout_marginLeft="12dp"
+            android:layout_toRightOf="@id/btnLogin"
             android:text="登录/注册"
             android:textColor="#FFFFFFFF"
             android:textSize="15sp" />
@@ -38,6 +40,52 @@
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"
         android:background="#FFFFFFFF">
+        <!-- 底部 专辑图片 -->
+        <!--<ImageView-->
+        <!--android:id="@+id/headicon"-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_marginBottom="15dp"-->
+        <!--android:layout_marginLeft="15dp"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:background="@drawable/main_bottomheadicon"-->
+        <!--android:scaleType="fitXY" />-->
+        <!--  底部分割线-->
+        <!--<View-->
+        <!--android:id="@+id/bottomsplit"-->
+        <!--android:layout_width="10dp"-->
+        <!--android:layout_height="55dp"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:layout_marginLeft="6dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_toRightOf="@id/headicon"-->
+        <!--android:background="@drawable/main_bottomsplit" />-->
+
+        <!-- 底部 设置 -->
+        <!-- <ImageButton
+             android:id="@+id/btnSetting"
+             android:layout_width="40dp"
+             android:layout_height="40dp"
+             android:layout_alignParentRight="true"
+             android:layout_centerVertical="true"
+             android:layout_margin="4dp"
+             android:background="@drawable/selector_music_btn"
+             android:padding="6dp"
+             android:scaleType="fitXY"
+             android:src="@drawable/main_bottomsetting" />-->
+
+        <!-- 底部 下一曲 -->
+        <!--<ImageButton
+            android:id="@+id/btnPlayNext"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/btnSetting"
+            android:background="@drawable/selector_music_btn"
+            android:padding="6dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/main_bottomnext" />-->
+        <!-- 底部 播放 或 暂停  -->
         <!-- 少个暂停图片 -->
         <ImageButton
             android:id="@+id/btnPlay"
@@ -48,20 +96,71 @@
             android:padding="6dp"
             android:scaleType="fitXY"
             android:src="@drawable/main_bottomplay" />
+        <!-- 底部 曲名 歌手 --><!-- <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+
+         android:layout_marginBottom="6dp"
+         android:layout_marginRight="6dp"
+         android:layout_marginTop="6dp"
+
+         android:layout_toLeftOf="@id/playLayout"
+         android:layout_toRightOf="@id/bottomsplit"
+         android:gravity="center_vertical"
+         android:orientation="vertical">
+
+         <com.nicolas.mobilelistener.view.AlwaysMarqueeTextView
+             android:id="@+id/txtMusicName"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:ellipsize="marquee"
+             android:focusable="true"
+             android:focusableInTouchMode="true"
+             android:marqueeRepeatLimit="marquee_forever"
+             android:scrollHorizontally="true"
+             android:singleLine="true"
+             android:text="N2-HELLO" />
+
+
+         <com.nicolas.mobilelistener.view.AlwaysMarqueeTextView
+             android:id="@+id/txtArtist"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:ellipsize="marquee"
+             android:focusable="true"
+             android:focusableInTouchMode="true"
+             android:marqueeRepeatLimit="marquee_forever"
+             android:scrollHorizontally="true"
+             android:singleLine="true"
+             android:text="未知"
+             android:textSize="12sp" />
+
+     </LinearLayout>-->
     </RelativeLayout>
 
     <!-- 中部 界面 -->
     <RelativeLayout
         android:id="@+id/mid_layout"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/bottom_layout"
         android:layout_below="@id/top_layout"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
+        <!-- 中部 消息通知 ListView -->
+        <!--<ListView-->
+        <!--android:id="@+id/lvMessage"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:layout_marginLeft="15dp"-->
+        <!--android:layout_marginRight="5dp"-->
+        <!--android:divider="@null"-->
+        <!--android:scrollbars="none" />-->
         <TextView
             android:id="@+id/que_topic"
             android:layout_width="wrap_content"
@@ -89,6 +188,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
+                android:background="@drawable/ans_bg"
                 android:paddingBottom="14dp"
                 android:paddingTop="14dp"
                 android:textSize="16sp" />
@@ -98,7 +198,7 @@
             android:id="@+id/flag_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/flag_1"
+            android:layout_below="@+id/flag_1"
             android:layout_marginLeft="20dp"
             android:orientation="horizontal">
 
@@ -113,9 +213,11 @@
                 android:id="@+id/que_ans_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/que_ans_1"
                 android:layout_marginLeft="24dp"
-                android:paddingBottom="14dp"
-                android:paddingTop="14dp"
+                android:layout_marginTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -137,9 +239,11 @@
                 android:id="@+id/que_ans_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/que_ans_2"
                 android:layout_marginLeft="24dp"
-                android:paddingBottom="14dp"
-                android:paddingTop="14dp"
+                android:layout_marginTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -162,10 +266,12 @@
                 android:id="@+id/que_ans_4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/que_ans_3"
                 android:layout_marginLeft="24dp"
-                android:paddingBottom="14dp"
+                android:layout_marginTop="10dp"
+                android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
         </LinearLayout>
     </RelativeLayout>
 
