@@ -23,11 +23,14 @@
             android:textSize="15sp" />
 
         <TextView
+            android:id="@+id/next_que"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:gravity="center_vertical"
             android:text="下一题"
-            android:gravity="center_vertical"/>
+            android:textColor="#fff" />
 
     </RelativeLayout>
 
@@ -38,41 +41,41 @@
         android:layout_alignParentBottom="true"
         android:background="#FFFFFFFF">
         <!-- 底部 专辑图片 -->
-        <ImageView
-            android:id="@+id/headicon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/main_bottomheadicon"
-            android:scaleType="fitXY" />
+        <!--<ImageView-->
+        <!--android:id="@+id/headicon"-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_marginBottom="15dp"-->
+        <!--android:layout_marginLeft="15dp"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:background="@drawable/main_bottomheadicon"-->
+        <!--android:scaleType="fitXY" />-->
         <!--  底部分割线-->
-        <View
-            android:id="@+id/bottomsplit"
-            android:layout_width="10dp"
-            android:layout_height="55dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginTop="8dp"
-            android:layout_toRightOf="@id/headicon"
-            android:background="@drawable/main_bottomsplit" />
+        <!--<View-->
+        <!--android:id="@+id/bottomsplit"-->
+        <!--android:layout_width="10dp"-->
+        <!--android:layout_height="55dp"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:layout_marginLeft="6dp"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_toRightOf="@id/headicon"-->
+        <!--android:background="@drawable/main_bottomsplit" />-->
 
         <!-- 底部 设置 -->
-        <ImageButton
-            android:id="@+id/btnSetting"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="4dp"
-            android:background="@drawable/selector_music_btn"
-            android:padding="6dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/main_bottomsetting" />
+        <!-- <ImageButton
+             android:id="@+id/btnSetting"
+             android:layout_width="40dp"
+             android:layout_height="40dp"
+             android:layout_alignParentRight="true"
+             android:layout_centerVertical="true"
+             android:layout_margin="4dp"
+             android:background="@drawable/selector_music_btn"
+             android:padding="6dp"
+             android:scaleType="fitXY"
+             android:src="@drawable/main_bottomsetting" />-->
 
         <!-- 底部 下一曲 -->
-        <ImageButton
+        <!--<ImageButton
             android:id="@+id/btnPlayNext"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -81,77 +84,58 @@
             android:background="@drawable/selector_music_btn"
             android:padding="6dp"
             android:scaleType="fitXY"
-            android:src="@drawable/main_bottomnext" />
+            android:src="@drawable/main_bottomnext" />-->
         <!-- 底部 播放 或 暂停  -->
-        <FrameLayout
-            android:id="@+id/playLayout"
+        <!-- 少个暂停图片 -->
+        <ImageButton
+            android:id="@+id/btnPlay"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="12dp"
-            android:layout_toLeftOf="@id/btnPlayNext"
-            android:scaleType="fitXY">
-            <!-- 少个暂停图片 -->
-            <ImageButton
-                android:id="@+id/btnPause"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/selector_music_btn"
-                android:padding="6dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/icon_pause_normal"
-                android:visibility="gone" />
+            android:background="@drawable/selector_music_btn"
+            android:padding="6dp"
+            android:layout_centerInParent="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/main_bottomplay" />
+        <!-- 底部 曲名 歌手 --><!-- <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
 
-            <ImageButton
-                android:id="@+id/btnPlay"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/selector_music_btn"
-                android:padding="6dp"
-                android:scaleType="fitXY"
-                android:src="@drawable/main_bottomplay" />
-        </FrameLayout>
-        <!-- 底部 曲名 歌手 -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+         android:layout_marginBottom="6dp"
+         android:layout_marginRight="6dp"
+         android:layout_marginTop="6dp"
 
-            android:layout_marginBottom="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_marginTop="6dp"
+         android:layout_toLeftOf="@id/playLayout"
+         android:layout_toRightOf="@id/bottomsplit"
+         android:gravity="center_vertical"
+         android:orientation="vertical">
 
-            android:layout_toLeftOf="@id/playLayout"
-            android:layout_toRightOf="@id/bottomsplit"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <com.nicolas.mobilelistener.view.AlwaysMarqueeTextView
-                android:id="@+id/txtMusicName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:text="N2-HELLO" />
+         <com.nicolas.mobilelistener.view.AlwaysMarqueeTextView
+             android:id="@+id/txtMusicName"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:ellipsize="marquee"
+             android:focusable="true"
+             android:focusableInTouchMode="true"
+             android:marqueeRepeatLimit="marquee_forever"
+             android:scrollHorizontally="true"
+             android:singleLine="true"
+             android:text="N2-HELLO" />
 
 
-            <com.nicolas.mobilelistener.view.AlwaysMarqueeTextView
-                android:id="@+id/txtArtist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ellipsize="marquee"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:scrollHorizontally="true"
-                android:singleLine="true"
-                android:text="未知"
-                android:textSize="12sp" />
+         <com.nicolas.mobilelistener.view.AlwaysMarqueeTextView
+             android:id="@+id/txtArtist"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:ellipsize="marquee"
+             android:focusable="true"
+             android:focusableInTouchMode="true"
+             android:marqueeRepeatLimit="marquee_forever"
+             android:scrollHorizontally="true"
+             android:singleLine="true"
+             android:text="未知"
+             android:textSize="12sp" />
 
-        </LinearLayout>
+     </LinearLayout>-->
     </RelativeLayout>
 
     <!-- 中部 界面 -->
@@ -168,15 +152,71 @@
         android:orientation="horizontal">
 
         <!-- 中部 消息通知 ListView -->
-        <ListView
-            android:id="@+id/lvMessage"
+        <!--<ListView-->
+        <!--android:id="@+id/lvMessage"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:layout_marginLeft="15dp"-->
+        <!--android:layout_marginRight="5dp"-->
+        <!--android:divider="@null"-->
+        <!--android:scrollbars="none" />-->
+        <TextView
+            android:id="@+id/que_topic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:text="题目"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/que_ans_1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="5dp"
-            android:divider="@null"
-            android:scrollbars="none" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/que_topic"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/ans_bg"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="答案A"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/que_ans_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/que_ans_1"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="答案B"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/que_ans_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/que_ans_2"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="答案B"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/que_ans_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/que_ans_3"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="答案B"
+            android:textSize="16sp" />
     </RelativeLayout>
 
 
