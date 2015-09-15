@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_background" >
+    android:background="@drawable/main_background">
     <!-- 顶部 界面 -->
     <RelativeLayout
         android:id="@+id/top_layout"
@@ -10,73 +10,32 @@
         android:background="@drawable/main_topbackground"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/main_toplogin"
-            android:gravity="center_vertical"
-            android:scaleType="fitXY" />
-
         <TextView
             android:id="@+id/txtLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/btnLogin"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
             android:layout_toRightOf="@id/btnLogin"
             android:text="登录/注册"
             android:textColor="#FFFFFFFF"
-
             android:textSize="15sp" />
 
-
-        <Button
-            android:id="@+id/btnSearch"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/main_topsearch"
-            android:gravity="center_vertical"
-            android:scaleType="fitXY" />
-
-        <ImageView
-            android:id="@+id/topsplit"
-            android:layout_width="5dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
-
-            android:layout_marginTop="10dp"
-            android:layout_toLeftOf="@id/btnSearch"
-            android:background="@drawable/main_topcutoffline" />
+            android:text="下一题"
+            android:gravity="center_vertical"/>
 
     </RelativeLayout>
-
-
-    <!-- 底部 界面 -->
-    <ProgressBar
-        android:id="@+id/seekbar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-
-        android:max="100"
-        android:maxHeight="3dp"
-        android:minHeight="3dp"
-        android:progressDrawable="@drawable/seekbar" />
 
     <RelativeLayout
         android:id="@+id/bottom_layout"
         android:layout_width="fill_parent"
         android:layout_height="64dp"
-        android:layout_above="@id/seekbar"
+        android:layout_alignParentBottom="true"
         android:background="#FFFFFFFF">
         <!-- 底部 专辑图片 -->
         <ImageView
@@ -87,9 +46,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/main_bottomheadicon"
-            android:scaleType="fitXY"
-
-            />
+            android:scaleType="fitXY" />
         <!--  底部分割线-->
         <View
             android:id="@+id/bottomsplit"
@@ -208,124 +165,18 @@
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/main_midbackground"
         android:orientation="horizontal">
-        <!-- 中部    顶部 消息通知-->
-        <TextView
-            android:id="@+id/txtLable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center_horizontal"
-            android:text="消息通知"
-            android:textColor="#ffffff"
-            android:textSize="18sp" />
-
-        <!-- 中部    底部3按钮 -->
-        <LinearLayout
-            android:id="@+id/menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal">
-            <!-- 作业 -->
-            <LinearLayout
-                android:id="@+id/layoutHomework"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/btnHomework"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/selector_music_btn"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/main_midtest" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="作业考试"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
-            <!-- 最近 -->
-            <LinearLayout
-                android:id="@+id/layoutRecent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/btnRecent"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/selector_music_btn"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/main_midhistory" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="最近播放"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
-            <!-- 我的收藏 -->
-            <LinearLayout
-                android:id="@+id/layoutCollection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/btnCollection"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/selector_music_btn"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/main_midstar" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="我的收藏"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
-        </LinearLayout>
-        <!--  消息通知下分割线-->
-        <View
-            android:id="@+id/messagesplit"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_above="@id/menu"
-            android:layout_marginBottom="6dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/main_midsplit"
-            android:scaleType="fitXY" />
 
         <!-- 中部 消息通知 ListView -->
         <ListView
             android:id="@+id/lvMessage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/messagesplit"
-            android:layout_below="@id/txtLable"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="5dp"
-            android:divider="@null" />
+            android:divider="@null"
+            android:scrollbars="none" />
     </RelativeLayout>
 
 

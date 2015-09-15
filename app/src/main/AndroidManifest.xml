@@ -1,29 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nicolas.mobilelistener" >
+    package="com.nicolas.mobilelistener">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".application.ListenerApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:name=".application.ListenerApplication"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".activity.WelcomeActivity"
-            android:windowSoftInputMode="adjustUnspecified"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustUnspecified">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.LoginActivity"/>
-        <activity android:name=".activity.RegisterActivity"/>
-        <activity android:name=".activity.MusicActivity"/>
-        <activity android:name=".activity.PlayActivity"/>
+        <activity android:name=".activity.LoginActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.MusicActivity" />
+        <activity android:name=".activity.PlayActivity" />
+        <activity android:name=".activity.AnsActivity" />
     </application>
 
 </manifest>

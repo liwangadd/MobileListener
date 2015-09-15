@@ -10,6 +10,7 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,7 +35,7 @@ import retrofit.client.Response;
 /**
  * Created by Nikolas on 2015/9/14.
  */
-public class MusicActivity extends Activity implements Callback<AllTest> {
+public class MusicActivity extends Activity implements Callback<AllTest>, AdapterView.OnItemClickListener {
 
     private ListView dataView;
 
@@ -79,6 +80,7 @@ public class MusicActivity extends Activity implements Callback<AllTest> {
                 finish();
             }
         });
+        dataView.setOnItemClickListener(this);
     }
 
     @Override
@@ -96,6 +98,13 @@ public class MusicActivity extends Activity implements Callback<AllTest> {
     public void failure(RetrofitError error) {
         loadingDialog.dismiss();
         Toast.makeText(this, "网络连接失败", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent=new Intent(this,AnsActivity.class);
+        intent.putExtra("test_id",allTest.get(position).getTest_id());
+        startActivity(intent);
     }
 
     class MusicAdapter extends BaseAdapter {
