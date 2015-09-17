@@ -25,6 +25,7 @@
         <activity android:name=".activity.MusicActivity" />
         <activity android:name=".activity.PlayActivity" />
         <activity android:name=".activity.AnsActivity" />
+        <activity android:name=".activity.AllQueActivity" />
     </application>
 
 </manifest>
