@@ -3,11 +3,20 @@ package com.nicolas.mobilelistener.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.nicolas.mobilelistener.R;
@@ -16,11 +25,12 @@ import com.nicolas.mobilelistener.bean.StuIdHolder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by liwang on 15-9-17.
  */
-public class RandListenActivity extends Activity implements View.OnClickListener, MediaPlayer.OnPreparedListener {
+public class RandListenActivity extends Activity implements View.OnClickListener, MediaPlayer.OnPreparedListener, AdapterView.OnItemClickListener {
 
     private TextView titleView;
     private TextView queTopicView;
@@ -33,11 +43,16 @@ public class RandListenActivity extends Activity implements View.OnClickListener
     private ImageView rightView;
     private View uploadView;
     private View flag1View, flag2View, flag3View, flag4View;
+    private View allQueView;
 
     private int selectedColr = Color.parseColor("#0288D1");
-    private ArrayList<Question> allQues;
+    private List<Question> allQues;
     private int position;
     private MediaPlayer mMediaPlayer;
+    private PopupWindow mPopupWindow;
+    private View popView;
+    private ListView dataView;
+    private boolean isShow = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +70,32 @@ public class RandListenActivity extends Activity implements View.OnClickListener
 
     private void initData() {
         if (mMediaPlayer == null) {
+            Intent intent = getIntent();
+            allQues = (ArrayList<Question>) intent.getSerializableExtra("all_que");
+            position = intent.getIntExtra("position", 0);
+
             //初始化音频播放设置
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mMediaPlayer.setOnPreparedListener(this);
 
-            Intent intent = getIntent();
-            allQues = (ArrayList<Question>) intent.getSerializableExtra("all_que");
-            position = intent.getIntExtra("position", 0);
+            //设置popupWindow内容
+            popView = getLayoutInflater().inflate(R.layout.all_que_pop, null);
+            dataView = (ListView) popView.findViewById(R.id.pop_data);
+            dataView.setAdapter(new QuestionAdapter(allQues));
+            dataView.setOnItemClickListener(this);
+            //设置popupWindow属性
+            mPopupWindow = new PopupWindow(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 500, getResources().getDisplayMetrics()));
+            mPopupWindow.setContentView(popView);
+            mPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            mPopupWindow.setOutsideTouchable(true);
+            mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    isShow = false;
+                }
+            });
             updateQue();
         } else {
             mMediaPlayer.start();
@@ -86,6 +119,7 @@ public class RandListenActivity extends Activity implements View.OnClickListener
         flag3View = findViewById(R.id.flag_3);
         flag4View = findViewById(R.id.flag_4);
         playView = (ImageView) findViewById(R.id.btnPlay);
+        allQueView = findViewById(R.id.more_que);
 
         flag1View.setOnClickListener(this);
         flag2View.setOnClickListener(this);
@@ -93,6 +127,7 @@ public class RandListenActivity extends Activity implements View.OnClickListener
         flag4View.setOnClickListener(this);
         uploadView.setOnClickListener(this);
         playView.setOnClickListener(this);
+        allQueView.setOnClickListener(this);
     }
 
     private void updateQue() {
@@ -129,6 +164,17 @@ public class RandListenActivity extends Activity implements View.OnClickListener
                 resetColor(flag4View);
                 break;
             case R.id.btnPlay:
+                if (mMediaPlayer.isPlaying()) {
+                    mMediaPlayer.pause();
+                } else {
+                    mMediaPlayer.start();
+                }
+                break;
+            case R.id.more_que:
+                if (!isShow) {
+                    isShow = true;
+                    mPopupWindow.showAsDropDown(allQueView);
+                }
                 break;
         }
     }
@@ -162,6 +208,51 @@ public class RandListenActivity extends Activity implements View.OnClickListener
     @Override
     public void onPrepared(MediaPlayer mp) {
         mp.start();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        mMediaPlayer.reset();
+        this.position = position;
+        isShow = false;
+        mPopupWindow.dismiss();
+        updateQue();
+    }
+
+    class QuestionAdapter extends BaseAdapter {
+
+        private List<Question> questions;
+        private LayoutInflater inflate;
+
+        public QuestionAdapter(List<Question> questions) {
+            this.questions = questions;
+            inflate = RandListenActivity.this.getLayoutInflater();
+        }
+
+        @Override
+        public int getCount() {
+            return questions.size();
+        }
+
+        @Override
+        public Question getItem(int position) {
+            return questions.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = inflate.inflate(R.layout.musiclist_listview_item, null);
+            TextView nameView = (TextView) convertView.findViewById(R.id.hwname);
+            nameView.setText(getItem(position).getQue_topic());
+            ImageView markView = (ImageView) convertView.findViewById(R.id.hwmark);
+            markView.setVisibility(View.GONE);
+            return convertView;
+        }
     }
 
     @Override
