@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.nicolas.mobilelistener.R;
 import com.nicolas.mobilelistener.application.ListenerApplication;
 import com.nicolas.mobilelistener.bean.AllQuestion;
-import com.nicolas.mobilelistener.bean.AllTest;
 import com.nicolas.mobilelistener.bean.Question;
 import com.nicolas.mobilelistener.bean.StuIdHolder;
 import com.nicolas.mobilelistener.service.QuestionService;
@@ -42,7 +41,6 @@ public class AnsActivity extends Activity implements Callback<AllQuestion>, View
     private TextView ansBView;
     private TextView ansCView;
     private TextView ansDView;
-    private ImageView playView;
     private ImageView rightA, rightB, rightC, rightD;
     private ImageView rightView;
     private View uploadView;
@@ -154,7 +152,7 @@ public class AnsActivity extends Activity implements Callback<AllQuestion>, View
         ansCView.setText(currentQue.getAns_c());
         ansDView.setText(currentQue.getAns_d());
         try {
-            mMediaPlayer.setDataSource("http://192.168.1.105/WebListener/records/" + currentQue.getPath());
+            mMediaPlayer.setDataSource(StuIdHolder.recordBase + currentQue.getPath());
             mMediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();

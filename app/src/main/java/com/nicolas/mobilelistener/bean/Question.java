@@ -1,9 +1,11 @@
 package com.nicolas.mobilelistener.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by Nikolas on 2015/9/15.
  */
-public class Question {
+public class Question implements Serializable {
     private int que_id;
     private String que_topic;
     private String ans_a;
