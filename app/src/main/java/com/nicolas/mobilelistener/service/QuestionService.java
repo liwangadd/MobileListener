@@ -1,9 +1,9 @@
 package com.nicolas.mobilelistener.service;
 
 import com.nicolas.mobilelistener.bean.AllQuestion;
-import com.nicolas.mobilelistener.bean.Question;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import retrofit.Callback;
 import retrofit.http.Field;
@@ -21,6 +21,10 @@ public interface QuestionService {
 
     @FormUrlEncoded
     @POST("/ans")
-    public void checkQueAns(@Field("que_id") int queId, @Field("ans") String ans, @Field("stu_id") String stuId, Callback<List<String>> callback);
+    public void checkQueAns(@Field("que_id") int queId, @Field("ans") String ans, @Field("stu_id") String stuId, Callback<Map<String, Object>> callback);
+
+    @FormUrlEncoded
+    @POST("compTest")
+    public void completeTest(@Field("stu_id") String stuId, @Field("test_id") String queId, Callback<Map<String, Object>> callback);
 
 }

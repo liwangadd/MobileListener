@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.nicolas.mobilelistener.R;
 import com.nicolas.mobilelistener.application.ListenerApplication;
 import com.nicolas.mobilelistener.bean.AllTest;
 import com.nicolas.mobilelistener.bean.OneTest;
+import com.nicolas.mobilelistener.bean.StuIdHolder;
 import com.nicolas.mobilelistener.service.OperatorService;
 import com.orhanobut.logger.Logger;
 
@@ -55,7 +57,7 @@ public class MusicActivity extends Activity implements Callback<AllTest>, Adapte
 
         restAdapter = ((ListenerApplication) getApplication()).getAdapter();
         operatorSErvice = restAdapter.create(OperatorService.class);
-        operatorSErvice.getAllTest(this);
+        operatorSErvice.getAllTest(StuIdHolder.userId, this);
     }
 
     private void initView() {
@@ -86,6 +88,7 @@ public class MusicActivity extends Activity implements Callback<AllTest>, Adapte
     @Override
     public void success(AllTest allTest, Response response) {
         loadingDialog.dismiss();
+        Logger.d(allTest.getResult().toString());
         if (allTest.getMessage()) {
             this.allTest.addAll(allTest.getResult());
             musicAdapter.notifyDataSetChanged();
@@ -96,15 +99,16 @@ public class MusicActivity extends Activity implements Callback<AllTest>, Adapte
 
     @Override
     public void failure(RetrofitError error) {
+        Logger.d(error.getMessage());
         loadingDialog.dismiss();
         Toast.makeText(this, "网络连接失败", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent=new Intent(this,AnsActivity.class);
-        intent.putExtra("test_id",allTest.get(position).getTest_id());
-        intent.putExtra("test_topic",allTest.get(position).getTest_topic());
+        Intent intent = new Intent(this, AnsActivity.class);
+        intent.putExtra("test_id", allTest.get(position).getTest_id());
+        intent.putExtra("test_topic", allTest.get(position).getTest_topic());
         startActivity(intent);
     }
 
@@ -138,6 +142,9 @@ public class MusicActivity extends Activity implements Callback<AllTest>, Adapte
             convertView = inflate.inflate(R.layout.musiclist_listview_item, null);
             TextView nameView = (TextView) convertView.findViewById(R.id.hwname);
             nameView.setText(getItem(position).getTest_topic());
+            ImageView markView = (ImageView) convertView.findViewById(R.id.hwmark);
+            if (getItem(position).getIs_complete() == 1)
+                markView.setBackgroundResource(R.drawable.homework_right);
             return convertView;
         }
     }

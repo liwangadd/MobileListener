@@ -1,7 +1,5 @@
 package com.nicolas.mobilelistener.bean;
 
-import java.util.Date;
-
 /**
  * Created by Nikolas on 2015/9/14.
  */
@@ -10,6 +8,15 @@ public class OneTest {
     private String test_topic;
     private String pub_time;
     private String teacher_name;
+    private int is_complete;
+
+    public int getIs_complete() {
+        return is_complete;
+    }
+
+    public void setIs_complete(int is_complete) {
+        this.is_complete = is_complete;
+    }
 
     public String getTest_id() {
         return test_id;
@@ -48,8 +55,9 @@ public class OneTest {
         return "OneTest{" +
                 "test_id='" + test_id + '\'' +
                 ", test_topic='" + test_topic + '\'' +
-                ", pub_time=" + pub_time +
+                ", pub_time='" + pub_time + '\'' +
                 ", teacher_name='" + teacher_name + '\'' +
+                ", is_complete=" + is_complete +
                 '}';
     }
 }
