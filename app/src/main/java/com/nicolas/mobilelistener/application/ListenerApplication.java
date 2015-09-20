@@ -21,7 +21,7 @@ public class ListenerApplication extends Application {
         super.onCreate();
         SharedPreferences preferences = getSharedPreferences("login", Context.MODE_PRIVATE);
         StuIdHolder.userId = preferences.getString("stuId", "");
-        adapter = new RestAdapter.Builder().setEndpoint("http://192.168.1.105/WebListener/student").setRequestInterceptor(new LoginInterceptor()).build();
+        adapter = new RestAdapter.Builder().setEndpoint("http://192.168.12.108/WebListener/student").setRequestInterceptor(new LoginInterceptor()).build();
     }
 
     public RestAdapter getAdapter() {
