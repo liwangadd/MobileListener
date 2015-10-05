@@ -12,17 +12,18 @@ import com.nicolas.mobilelistener.R;
 import com.nicolas.mobilelistener.application.ListenerApplication;
 import com.nicolas.mobilelistener.bean.IsSuccess;
 import com.nicolas.mobilelistener.service.AccountService;
-import com.orhanobut.logger.Logger;
 
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import javax.inject.Inject;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Nikolas on 2015/9/14.
  */
-public class RegisterActivity extends Activity implements View.OnClickListener, Callback<IsSuccess> {
+public class RegisterActivity extends Activity implements View.OnClickListener {
 
     private EditText nameView;
     private EditText passwordView;
@@ -32,18 +33,16 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
     private EditText realNameView;
     private Button registerBtn;
 
-    private AccountService accountService;
-    private RestAdapter restAdapter;
+    @Inject
+    AccountService accountService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register_activity);
+        ((ListenerApplication)getApplication()).component().inject(this);
 
         initView();
-
-        restAdapter = ((ListenerApplication) getApplication()).getAdapter();
-        accountService = restAdapter.create(AccountService.class);
     }
 
     private void initView() {
@@ -75,26 +74,29 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                 } else if ("".equals(realNameView.getText().toString())) {
                     Toast.makeText(this, "请输入真实姓名", Toast.LENGTH_SHORT).show();
                 } else {
-                    accountService.register("", passwordView.getText().toString(), Integer.valueOf(gradeView.getText().toString()),
+                    Observable<IsSuccess> regObservable = accountService.register("", passwordView.getText().toString(), Integer.valueOf(gradeView.getText().toString()),
                             Integer.valueOf(classView.getText().toString()), realNameView.getText().toString(),
-                            nameView.getText().toString(), this);
+                            nameView.getText().toString());
+                    regObservable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).
+                            subscribe(new Action1<IsSuccess>() {
+                        @Override
+                        public void call(IsSuccess isSuccess) {
+                            if (isSuccess.getMessage().equals("success")) {
+                                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                finish();
+                            } else if (isSuccess.getMessage().equals("double")) {
+                                Toast.makeText(RegisterActivity.this, "学号已经注册，请登录", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            Toast.makeText(RegisterActivity.this, "网络连接异常", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 break;
         }
     }
 
-    @Override
-    public void success(IsSuccess isSuccess, Response response) {
-        if (isSuccess.getMessage().equals("success")) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        } else if (isSuccess.getMessage().equals("double")) {
-            Toast.makeText(this, "学号已经注册，请登录", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void failure(RetrofitError error) {
-        Toast.makeText(this, "网络连接异常", Toast.LENGTH_SHORT).show();
-    }
 }

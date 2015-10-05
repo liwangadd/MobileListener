@@ -9,6 +9,7 @@ import retrofit.Callback;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.POST;
+import rx.Observable;
 
 /**
  * Created by Nikolas on 2015/9/15.
@@ -16,15 +17,15 @@ import retrofit.http.POST;
 public interface QuestionService {
 
     @FormUrlEncoded
-    @POST("/queById")
-    public void getQueById(@Field("test_id") String testId, Callback<AllQuestion> callback);
+    @POST("queById")
+    public Observable<AllQuestion> getQueById(@Field("test_id") String testId);
 
     @FormUrlEncoded
-    @POST("/ans")
-    public void checkQueAns(@Field("que_id") int queId, @Field("ans") String ans, @Field("stu_id") String stuId, Callback<Map<String, Object>> callback);
+    @POST("ans")
+    public Observable<Map<String, Object>> checkQueAns(@Field("que_id") int queId, @Field("ans") String ans, @Field("stu_id") String stuId);
 
     @FormUrlEncoded
     @POST("compTest")
-    public void completeTest(@Field("stu_id") String stuId, @Field("test_id") String queId, Callback<Map<String, Object>> callback);
+    public Observable<Map<String, Object>> completeTest(@Field("stu_id") String stuId, @Field("test_id") String queId);
 
 }

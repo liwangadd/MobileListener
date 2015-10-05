@@ -5,26 +5,27 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.nicolas.mobilelistener.bean.StuIdHolder;
-import com.nicolas.mobilelistener.service.LoginInterceptor;
-
-import retrofit.RestAdapter;
 
 /**
  * Created by Nikolas on 2015/9/14.
  */
 public class ListenerApplication extends Application {
 
-    private RestAdapter adapter;
+    private ApplicationComponent component;
 
     @Override
     public void onCreate() {
         super.onCreate();
         SharedPreferences preferences = getSharedPreferences("login", Context.MODE_PRIVATE);
         StuIdHolder.userId = preferences.getString("stuId", "");
-        adapter = new RestAdapter.Builder().setEndpoint("http://192.168.12.108/WebListener/student").setRequestInterceptor(new LoginInterceptor()).build();
+
+        component = DaggerApplicationComponent.builder()
+                .applicationModule(new ApplicationModule())
+                .build();
     }
 
-    public RestAdapter getAdapter() {
-        return adapter;
+    public ApplicationComponent component(){
+        return component;
     }
+
 }

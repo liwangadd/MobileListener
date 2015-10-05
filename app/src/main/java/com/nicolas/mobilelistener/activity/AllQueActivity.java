@@ -23,22 +23,24 @@ import com.nicolas.mobilelistener.service.QuestionService;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import javax.inject.Inject;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by liwang on 15-9-17.
  */
-public class AllQueActivity extends Activity implements Callback<AllQuestion>, AdapterView.OnItemClickListener {
+public class AllQueActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private TextView titleView;
     private View logoutView;
     private ListView dataView;
 
-    private RestAdapter restAdapter;
-    private QuestionService questionService;
+    @Inject
+    QuestionService questionService;
 
     private String testTitle;
     private String testId;
@@ -51,6 +53,7 @@ public class AllQueActivity extends Activity implements Callback<AllQuestion>, A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.musiclis_activityt);
+        ((ListenerApplication)getApplication()).component().inject(this);
 
         initView();
 
@@ -76,30 +79,30 @@ public class AllQueActivity extends Activity implements Callback<AllQuestion>, A
         testTitle = intent.getStringExtra("test_topic");
         testId = intent.getStringExtra("test_id");
 
-        restAdapter = ((ListenerApplication) getApplication()).getAdapter();
-        questionService = restAdapter.create(QuestionService.class);
-
         titleView.setText(testTitle);
-        questionService.getQueById(testId, this);
+        Observable<AllQuestion> allQueObservable = questionService.getQueById(testId);
+        allQueObservable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                .subscribe(new Action1<AllQuestion>() {
+                    @Override
+                    public void call(AllQuestion questions) {
+                        loadingView.dismiss();
+                        if (questions.getMessage()) {
+                            allQues.addAll(questions.getResult());
+                            questionAdapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(AllQueActivity.this, "题目获取失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Toast.makeText(AllQueActivity.this, "网络连接异常", Toast.LENGTH_SHORT).show();
+                        loadingView.dismiss();
+                    }
+                });
+
         questionAdapter = new QuestionAdapter(allQues);
         dataView.setAdapter(questionAdapter);
-    }
-
-    @Override
-    public void success(AllQuestion questions, Response response) {
-        loadingView.dismiss();
-        if (questions.getMessage()) {
-            allQues.addAll(questions.getResult());
-            questionAdapter.notifyDataSetChanged();
-        } else {
-            Toast.makeText(this, "题目获取失败", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void failure(RetrofitError error) {
-        Toast.makeText(this, "网络连接异常", Toast.LENGTH_SHORT).show();
-        loadingView.dismiss();
     }
 
     @Override

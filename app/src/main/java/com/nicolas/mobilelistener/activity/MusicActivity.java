@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,22 +26,27 @@ import com.orhanobut.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import javax.inject.Inject;
+
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
+import retrofit.RxJavaCallAdapterFactory;
+import rx.Observable;
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Nikolas on 2015/9/14.
  */
-public class MusicActivity extends Activity implements Callback<AllTest>, AdapterView.OnItemClickListener {
+public class MusicActivity extends Activity implements AdapterView.OnItemClickListener {
 
     private ListView dataView;
 
-    private OperatorService operatorSErvice;
-    private RestAdapter restAdapter;
+    @Inject
+    OperatorService operatorService;
     private List<OneTest> allTest = new ArrayList<>();
     private MusicAdapter musicAdapter;
     private ProgressDialog loadingDialog;
@@ -52,12 +56,33 @@ public class MusicActivity extends Activity implements Callback<AllTest>, Adapte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.musiclis_activityt);
+        ((ListenerApplication)getApplication()).component().inject(this);
 
         initView();
 
-        restAdapter = ((ListenerApplication) getApplication()).getAdapter();
-        operatorSErvice = restAdapter.create(OperatorService.class);
-        operatorSErvice.getAllTest(StuIdHolder.userId, this);
+        Observable<AllTest> allTestObservable = operatorService.getAllTest("1");
+        allTestObservable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).
+                subscribe(new Action1<AllTest>() {
+                    @Override
+                    public void call(AllTest allTest) {
+                        loadingDialog.dismiss();
+                        Logger.d(allTest.getResult().toString());
+                        if (allTest.getMessage()) {
+                            MusicActivity.this.allTest.addAll(allTest.getResult());
+                            musicAdapter.notifyDataSetChanged();
+                        } else {
+                            Toast.makeText(MusicActivity.this, "获取信息失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Logger.d(throwable.getMessage());
+                        loadingDialog.dismiss();
+                        Toast.makeText(MusicActivity.this, "网络连接失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
     }
 
     private void initView() {
@@ -83,25 +108,6 @@ public class MusicActivity extends Activity implements Callback<AllTest>, Adapte
             }
         });
         dataView.setOnItemClickListener(this);
-    }
-
-    @Override
-    public void success(AllTest allTest, Response response) {
-        loadingDialog.dismiss();
-        Logger.d(allTest.getResult().toString());
-        if (allTest.getMessage()) {
-            this.allTest.addAll(allTest.getResult());
-            musicAdapter.notifyDataSetChanged();
-        } else {
-            Toast.makeText(this, "获取信息失败", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void failure(RetrofitError error) {
-        Logger.d(error.getMessage());
-        loadingDialog.dismiss();
-        Toast.makeText(this, "网络连接失败", Toast.LENGTH_SHORT).show();
     }
 
     @Override

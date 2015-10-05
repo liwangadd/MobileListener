@@ -17,15 +17,17 @@ import com.nicolas.mobilelistener.bean.StuIdHolder;
 import com.nicolas.mobilelistener.service.AccountService;
 import com.orhanobut.logger.Logger;
 
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import javax.inject.Inject;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Nikolas on 2015/9/14.
  */
-public class LoginActivity extends Activity implements Callback<IsSuccess>, View.OnClickListener {
+public class LoginActivity extends Activity implements View.OnClickListener {
 
     private EditText userView;
     private EditText passwordView;
@@ -33,18 +35,17 @@ public class LoginActivity extends Activity implements Callback<IsSuccess>, View
     private View registerView;
     private static LoginActivity self;
 
-    private AccountService accountService;
-    private RestAdapter restAdapter;
+    @Inject
+    AccountService accountService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+        ((ListenerApplication)getApplication()).component().inject(this);
 
         initView();
 
-        restAdapter = ((ListenerApplication) getApplication()).getAdapter();
-        accountService = restAdapter.create(AccountService.class);
         self = this;
     }
 
@@ -59,28 +60,6 @@ public class LoginActivity extends Activity implements Callback<IsSuccess>, View
     }
 
     @Override
-    public void success(IsSuccess isSuccess, Response response) {
-        if (isSuccess.getMessage().equals("true")) {
-            SharedPreferences preferences = getSharedPreferences("login", Context.MODE_PRIVATE);
-            StuIdHolder.userId = isSuccess.getStuId();
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("isLogined", true);
-            editor.putString("stuId", StuIdHolder.userId);
-            editor.commit();
-            startActivity(new Intent(this, MusicActivity.class));
-            finish();
-        } else {
-            Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void failure(RetrofitError error) {
-        Logger.d(error.getMessage());
-        Toast.makeText(this, "网络连接失败", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnLogin:
@@ -89,7 +68,31 @@ public class LoginActivity extends Activity implements Callback<IsSuccess>, View
                 } else if ("".equals(passwordView.getText().toString())) {
                     Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
                 } else {
-                    accountService.login(userView.getText().toString(), passwordView.getText().toString(), this);
+                    Observable<IsSuccess> loginObservable = accountService.login(userView.getText().toString(), passwordView.getText().toString());
+                    loginObservable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+                    .subscribe(new Action1<IsSuccess>() {
+                        @Override
+                        public void call(IsSuccess isSuccess) {
+                            if (isSuccess.getMessage().equals("true")) {
+                                SharedPreferences preferences = getSharedPreferences("login", Context.MODE_PRIVATE);
+                                StuIdHolder.userId = isSuccess.getStuId();
+                                SharedPreferences.Editor editor = preferences.edit();
+                                editor.putBoolean("isLogined", true);
+                                editor.putString("stuId", StuIdHolder.userId);
+                                editor.commit();
+                                startActivity(new Intent(LoginActivity.this, MusicActivity.class));
+                                finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            Logger.d(throwable.getMessage());
+                            Toast.makeText(LoginActivity.this, "网络连接失败", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 break;
             case R.id.register:

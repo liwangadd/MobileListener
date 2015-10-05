@@ -24,15 +24,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Nikolas on 2015/9/14.
  */
-public class AnsActivity extends Activity implements Callback<AllQuestion>, View.OnClickListener, MediaPlayer.OnPreparedListener {
+public class AnsActivity extends Activity implements View.OnClickListener, MediaPlayer.OnPreparedListener {
 
     private TextView titleView;
     private View nextView;
@@ -50,21 +53,21 @@ public class AnsActivity extends Activity implements Callback<AllQuestion>, View
 
     private int selectedColr = Color.parseColor("#0288D1");
 
-    private RestAdapter restAdapter;
-    private QuestionService questionService;
+    @Inject
+    QuestionService questionService;
     private List<Question> allQues;
     private int currentIndex = 0;
     private String currentAns = "";
 
     private MediaPlayer mMediaPlayer;
 
-    private CheckAnsCallBack checkAnsCallBack;
     private String testId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ans_activity);
+        ((ListenerApplication)getApplication()).component().inject(this);
 
         initView();
     }
@@ -77,8 +80,6 @@ public class AnsActivity extends Activity implements Callback<AllQuestion>, View
 
     private void initData() {
         if (mMediaPlayer == null) {
-            restAdapter = ((ListenerApplication) getApplication()).getAdapter();
-            questionService = restAdapter.create(QuestionService.class);
             //初始化音频播放设置
             mMediaPlayer = new MediaPlayer();
             mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -88,8 +89,26 @@ public class AnsActivity extends Activity implements Callback<AllQuestion>, View
             testId = intent.getStringExtra("test_id");
             String testTopic = intent.getStringExtra("test_topic");
             titleView.setText(testTopic);
-            questionService.getQueById(testId, this);
-            checkAnsCallBack = new CheckAnsCallBack();
+            Observable<AllQuestion> ansObservable = questionService.getQueById(testId);
+            ansObservable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).
+                    subscribe(new Action1<AllQuestion>() {
+                        @Override
+                        public void call(AllQuestion questions) {
+                            loadingView.dismiss();
+                            if (questions.getMessage()) {
+                                allQues = questions.getResult();
+                                updateQue(currentIndex);
+                            } else {
+                                Toast.makeText(AnsActivity.this, "题目获取失败", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
+                            Toast.makeText(AnsActivity.this, "网络连接异常", Toast.LENGTH_SHORT).show();
+                            loadingView.dismiss();
+                        }
+                    });
         } else {
             mMediaPlayer.start();
         }
@@ -127,23 +146,6 @@ public class AnsActivity extends Activity implements Callback<AllQuestion>, View
 //        playView.setOnClickListener(this);
     }
 
-    @Override
-    public void success(AllQuestion questions, Response response) {
-        loadingView.dismiss();
-        if (questions.getMessage()) {
-            allQues = questions.getResult();
-            updateQue(currentIndex);
-        } else {
-            Toast.makeText(this, "题目获取失败", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void failure(RetrofitError error) {
-        Toast.makeText(this, "网络连接异常", Toast.LENGTH_SHORT).show();
-        loadingView.dismiss();
-    }
-
     private void updateQue(int pos) {
         Question currentQue = allQues.get(pos);
         queTopicView.setText(currentQue.getQue_topic());
@@ -174,21 +176,24 @@ public class AnsActivity extends Activity implements Callback<AllQuestion>, View
                     return;
                 }
                 if (++currentIndex >= allQues.size()) {
-                    questionService.completeTest(StuIdHolder.userId, testId, new Callback<Map<String, Object>>() {
-                        @Override
-                        public void success(Map<String, Object> stringObjectMap, Response response) {
-
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-
-                        }
-                    });
+                    questionService.completeTest(StuIdHolder.userId, testId);
                 }
                 showRightAns();
                 mMediaPlayer.reset();
-                questionService.checkQueAns(allQues.get(currentIndex).getQue_id(), currentAns, StuIdHolder.userId, checkAnsCallBack);
+                Observable<Map<String, Object>> checkObservable = questionService.checkQueAns(allQues.get(currentIndex).getQue_id(), currentAns, StuIdHolder.userId);
+                checkObservable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).
+                        subscribe(new Action1<Map<String, Object>>() {
+                @Override
+                public void call(Map<String, Object> stringObjectMap) {
+                    AnsActivity.this.handler();
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    Logger.d(throwable.getMessage());
+                    AnsActivity.this.handler();
+                }
+            });
                 break;
             case R.id.flag_1:
                 resetColor(flag1View);
@@ -247,19 +252,6 @@ public class AnsActivity extends Activity implements Callback<AllQuestion>, View
             nextView.setVisibility(View.VISIBLE);
         } else if (currentIndex == allQues.size() - 1) {
             Toast.makeText(this, "您已完成该试卷所有题目", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    class CheckAnsCallBack implements Callback<Map<String, Object>> {
-        @Override
-        public void failure(RetrofitError error) {
-            Logger.d(error.getMessage());
-            AnsActivity.this.handler();
-        }
-
-        @Override
-        public void success(Map<String, Object> strings, Response response) {
-            AnsActivity.this.handler();
         }
     }
 
